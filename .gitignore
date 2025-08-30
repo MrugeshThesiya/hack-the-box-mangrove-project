@@ -1,2 +1,44 @@
 ./ml-backend/data/*
 ./ml-backend/processed_data/*
+
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+
+
+# dependencies
+./mobile-app/node_modules/
+
+# Expo
+./mobile-app/.expo/
+./mobile-app/dist/
+./mobile-app/web-build/
+./mobile-app/expo-env.d.ts
+
+# Native
+./mobile-app/.kotlin/
+./mobile-app/*.orig.*
+./mobile-app/*.jks
+./mobile-app/*.p8
+./mobile-app/*.p12
+./mobile-app/*.key
+./mobile-app/*.mobileprovision
+
+# Metro
+./mobile-app/.metro-health-check*
+
+# debug
+./mobile-app/npm-debug.*
+./mobile-app/yarn-debug.*
+./mobile-app/yarn-error.*
+
+# macOS
+./mobile-app/.DS_Store
+./mobile-app/*.pem
+
+# local env files
+./mobile-app/.env*.local
+
+# typescript
+./mobile-app/*.tsbuildinfo
+
+./mobile-app/app-example
