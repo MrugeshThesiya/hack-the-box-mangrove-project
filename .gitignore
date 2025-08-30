@@ -1,1 +1,2 @@
 ./ml-backend/data/*
+./ml-backend/processed_data/*
