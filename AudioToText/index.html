@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice to Report</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #eef5f9, #d9e8f5);
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      color: #444;
+    }
+    select {
+      padding: 12px 15px;
+      margin: 15px 0;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+      transition: 0.3s;
+    }
+    select:focus {
+      border-color: #0077cc;
+    }
+    #recordBtn {
+      padding: 15px 40px;
+      margin: 20px 0;
+      font-size: 20px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: #e74c3c;
+      color: white;
+      transition: 0.3s;
+    }
+    #recordBtn.recording {
+      background: #c0392b;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(231, 76, 60, 0.5);
+    }
+    textarea {
+      margin-top: 20px;
+      width: 100%;
+      min-height: 120px;
+      font-size: 16px;
+      padding: 15px;
+      border: 2px solid #0077cc;
+      border-radius: 10px;
+      outline: none;
+      resize: vertical;
+      transition: 0.3s;
+    }
+    textarea:focus {
+      border-color: #28a745;
+    }
+    #submitBtn {
+      margin-top: 20px;
+      padding: 14px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: #28a745;
+      color: white;
+      transition: 0.3s;
+    }
+    #submitBtn:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎤 Fisherman Voice Report</h2>
+
+    <!-- Language Selector -->
+    <label for="language">🌐 Select Language:</label><br>
+    <select id="language">
+      <option value="en-IN">English (India)</option>
+      <option value="hi-IN">Hindi (हिन्दी)</option>
+      <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+      <option value="mr-IN">Marathi (मराठी)</option>
+      <option value="bn-IN">Bengali (বাংলা)</option>
+    </select>
+
+    <!-- Single Toggle Button -->
+    <br>
+    <button id="recordBtn">🎙 Start Recording</button>
+    
+    <!-- Editable Output -->
+    <textarea id="output" placeholder="Your speech will appear here..."></textarea>
+
+    <!-- Submit Button -->
+    <br>
+    <button id="submitBtn">✅ Submit Report</button>
+  </div>
+
+  <script>
+    const recordBtn = document.getElementById("recordBtn");
+    const output = document.getElementById("output");
+    const langSelect = document.getElementById("language");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.interimResults = true;
+    let isRecording = false;
+
+    // Toggle recording
+    recordBtn.addEventListener("click", () => {
+      if (!isRecording) {
+        recognition.lang = langSelect.value;
+        recognition.start();
+        isRecording = true;
+        recordBtn.textContent = "🛑 Stop Recording";
+        recordBtn.classList.add("recording");
+        output.value = "🎙 Listening...";
+      } else {
+        recognition.stop();
+        isRecording = false;
+        recordBtn.textContent = "🎙 Start Recording";
+        recordBtn.classList.remove("recording");
+      }
+    });
+
+    // Show transcription
+    recognition.onresult = (event) => {
+      let transcript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript + " ";
+      }
+      output.value = transcript;
+    };
+
+    recognition.onerror = (event) => {
+      output.value = "❌ Error: " + event.error;
+    };
+
+    // Submit report
+    submitBtn.addEventListener("click", () => {
+      const finalText = output.value.trim();
+      if (finalText === "") {
+        alert("⚠️ Please record or type a report before submitting.");
+      } else {
+        alert("✅ Report Submitted:\n\n" + finalText);
+        // TODO: send `finalText` to backend
+      }
+    });
+  </script>
+</body>
+</html>
