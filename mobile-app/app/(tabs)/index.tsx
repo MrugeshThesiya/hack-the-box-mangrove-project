@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   useColorScheme,
+  TextInput,
 } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -22,7 +23,16 @@ export default function HomeScreen() {
     longitude: number;
   } | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [manualLatitude, setManualLatitude] = useState<string>("");
+  const [manualLongitude, setManualLongitude] = useState<string>("");
+  const [mangroveResult, setMangroveResult] = useState<string | null>(null);
+  const [checkingMangrove, setCheckingMangrove] = useState(false);
   const colorScheme = useColorScheme();
+
+  // API port variable
+  const API_PORT = 8001; // Change this if your backend port changes
+  const NETWORK_IP = "10.142.166.106"; // Change this if your backend IP changes
+  const API_URL = `http://${NETWORK_IP}:${API_PORT}/check-coordinates`;
 
   const requestPermissions = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -89,6 +99,7 @@ export default function HomeScreen() {
           latitude: loc.coords.latitude,
           longitude: loc.coords.longitude,
         });
+        checkMangroveRegion(loc.coords.latitude, loc.coords.longitude);
       } else {
         Alert.alert("Error", "Location data is unavailable.");
         setLocation(null);
@@ -99,6 +110,44 @@ export default function HomeScreen() {
     } finally {
       setLocationLoading(false);
     }
+  };
+
+  // Function to check mangrove region
+  const checkMangroveRegion = async (latitude: number, longitude: number) => {
+    setCheckingMangrove(true);
+    setMangroveResult(null);
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude, longitude }),
+      });
+      const data = await response.json();
+      if (data.is_mangrove) {
+        setMangroveResult("✅ This is a Mangrove region.");
+      } else {
+        setMangroveResult("❌ This is a Non-mangrove region.");
+      }
+    } catch (error) {
+      setMangroveResult("Error: Could not connect to the server.");
+    } finally {
+      setCheckingMangrove(false);
+    }
+  };
+
+  // Update handleManualLocation to check mangrove region
+  const handleManualLocation = () => {
+    const lat = parseFloat(manualLatitude);
+    const lng = parseFloat(manualLongitude);
+    if (isNaN(lat) || isNaN(lng)) {
+      Alert.alert(
+        "Invalid Input",
+        "Please enter valid numbers for latitude and longitude."
+      );
+      return;
+    }
+    setLocation({ latitude: lat, longitude: lng });
+    checkMangroveRegion(lat, lng);
   };
 
   const isDark = colorScheme === "dark";
@@ -157,44 +206,124 @@ export default function HomeScreen() {
           </ThemedText>
         </TouchableOpacity>
 
+        {/* Check My Region Button */}
         <TouchableOpacity
           style={[
             styles.captureButton,
-            { backgroundColor: isDark ? "#1565C0" : "#1976D2" },
+            { backgroundColor: isDark ? "#2E7D32" : "#81C784", marginTop: 0 },
           ]}
           onPress={sendLocation}
+          disabled={locationLoading}
         >
           <ThemedText style={styles.captureButtonText}>
-            📍 Show Location
+            📍 Check My Region
           </ThemedText>
         </TouchableOpacity>
 
-        {/* Loader while fetching location */}
-        {locationLoading && (
-          <View style={{ marginTop: 12, alignItems: "center" }}>
-            <ActivityIndicator
-              size="large"
-              color={isDark ? "#81C784" : "#2E7D32"}
-            />
-            <ThemedText>Fetching coordinates...</ThemedText>
-          </View>
-        )}
-
-        {/* Display location if available */}
-        {location && !locationLoading && (
-          <View
-            style={{ marginTop: 12, alignItems: "center", marginBottom: 20 }}
-          >
+        {/* Show captured latitude and longitude */}
+        {location && (
+          <View style={{ marginTop: 8, alignItems: "center" }}>
             <ThemedText
               style={{
                 color: isDark ? "#81C784" : "#2E7D32",
                 fontWeight: "bold",
               }}
             >
-              Your Coordinates:
+              Latitude: {location.latitude}
             </ThemedText>
-            <ThemedText>{location.latitude}</ThemedText>
-            <ThemedText>{location.longitude}</ThemedText>
+            <ThemedText
+              style={{
+                color: isDark ? "#81C784" : "#2E7D32",
+                fontWeight: "bold",
+              }}
+            >
+              Longitude: {location.longitude}
+            </ThemedText>
+          </View>
+        )}
+
+        {/* Mangrove Region Check (Testing Only) */}
+        <View style={{ width: "80%", marginTop: 24, alignItems: "center" }}>
+          <ThemedText
+            style={{
+              fontWeight: "bold",
+              color: isDark ? "#81C784" : "#2E7D32",
+              marginBottom: 8,
+              fontSize: 16,
+            }}
+          >
+            Check Mangrove Region (Testing Only)
+          </ThemedText>
+          <ThemedText style={{ color: "#888", marginBottom: 8, fontSize: 13 }}>
+            Enter latitude and longitude to test if a region is a mangrove.
+          </ThemedText>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                color: isDark ? "#fff" : "#222",
+                borderColor: isDark ? "#81C784" : "#2E7D32",
+                width: "100%",
+                textAlign: "center",
+              },
+            ]}
+            placeholder="Enter Latitude"
+            placeholderTextColor={isDark ? "#81C784" : "#2E7D32"}
+            keyboardType="numeric"
+            value={manualLatitude}
+            onChangeText={setManualLatitude}
+          />
+          <TextInput
+            style={[
+              styles.input,
+              {
+                color: isDark ? "#fff" : "#222",
+                borderColor: isDark ? "#81C784" : "#2E7D32",
+                width: "100%",
+                textAlign: "center",
+              },
+            ]}
+            placeholder="Enter Longitude"
+            placeholderTextColor={isDark ? "#81C784" : "#2E7D32"}
+            keyboardType="numeric"
+            value={manualLongitude}
+            onChangeText={setManualLongitude}
+          />
+          <TouchableOpacity
+            style={[
+              styles.captureButton,
+              { backgroundColor: isDark ? "#388E3C" : "#4CAF50", marginTop: 8 },
+            ]}
+            onPress={handleManualLocation}
+          >
+            <ThemedText style={styles.captureButtonText}>
+              Check Region
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        {/* Loader while checking mangrove */}
+        {checkingMangrove && (
+          <View style={{ marginTop: 12, alignItems: "center" }}>
+            <ActivityIndicator
+              size="large"
+              color={isDark ? "#81C784" : "#2E7D32"}
+            />
+          </View>
+        )}
+
+        {/* Display mangrove result */}
+        {mangroveResult && !checkingMangrove && (
+          <View style={{ marginTop: 8, alignItems: "center" }}>
+            <ThemedText
+              style={{
+                color: mangroveResult.startsWith("✅") ? "#388E3C" : "#dc3545",
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              {mangroveResult}
+            </ThemedText>
           </View>
         )}
 
@@ -340,5 +469,13 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
     opacity: 0.3,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 6,
+    fontSize: 16,
+    backgroundColor: "transparent",
   },
 });
