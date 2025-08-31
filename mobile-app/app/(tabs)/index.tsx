@@ -256,6 +256,7 @@ export default function HomeScreen() {
           </ThemedText>
           <ThemedText style={{ color: "#888", marginBottom: 8, fontSize: 13 }}>
             Enter latitude and longitude to test if a region is a mangrove.
+            mangrove region : 21.95, 89.18
           </ThemedText>
           <TextInput
             style={[
