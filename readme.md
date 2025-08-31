@@ -9,7 +9,7 @@ A multi-component platform for mangrove ecosystem monitoring, conservation, and 
 ```
 .
 ├── AudioToText/      # Voice-to-report web app (Flask backend)
-├── dashboard/        # Reserved for dashboard features (empty)
+├── dashboard/        # Web dashboard for analytics, incident mapping, and admin tools (Next.js, React, Tailwind)
 ├── Mangrove/         # Mangrove image analysis (FastAPI backend, Jupyter notebook)
 ├── ml-backend/       # Geospatial ML backend (FastAPI, GeoPandas)
 ├── mobile-app/       # Expo React Native mobile app
@@ -72,10 +72,29 @@ A multi-component platform for mangrove ecosystem monitoring, conservation, and 
 
 ---
 
+### 4. Dashboard (`dashboard/`)
+
+- **Tech:** Next.js, React, TypeScript, Tailwind CSS
+- **Features:**
+  - Interactive map with incident heatmaps
+  - Analytics and reporting tools
+  - User management and settings
+  - View and manage mangrove conservation incidents
+- **Getting Started:**
+  ```sh
+  cd dashboard
+  npm install
+  npm run dev
+  ```
+  Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
 ## Data
 
 - **Geospatial Data:** Located in `data/` and `processed_data/`
 - **Sample Images:** See `mang.jpg`
+  data is too large to be pushed and therfore is stored locally as of now
 
 ---
 
