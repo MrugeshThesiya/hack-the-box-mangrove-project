@@ -1,78 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mangrove Region Checker</title>
-    <style>
-        body { font-family: sans-serif; display: grid; place-content: center; height: 100vh; margin: 0; background-color: #f0f4f8; }
-        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        input { padding: 0.5rem; margin: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 0.6rem 1.2rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #218838; }
-        #result { margin-top: 1rem; font-size: 1.2rem; font-weight: bold; }
-        .mangrove { color: #28a745; }
-        .non-mangrove { color: #dc3545; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h1>Mangrove Region Checker</h1>
-        <div>
-            <input type="number" id="latitude" placeholder="Enter Latitude" step="any">
-            <input type="number" id="longitude" placeholder="Enter Longitude" step="any">
-        </div>
-        <button id="checkButton">Check Location</button>
-        <p id="result">Enter coordinates to see the result.</p>
-    </div>
-
-    <script>
-        const checkButton = document.getElementById('checkButton');
-        const latitudeInput = document.getElementById('latitude');
-        const longitudeInput = document.getElementById('longitude');
-        const resultText = document.getElementById('result');
-
-        checkButton.addEventListener('click', async () => {
-            const lat = latitudeInput.value;
-            const lon = longitudeInput.value;
-
-            if (!lat || !lon) {
-                resultText.textContent = "Please enter both latitude and longitude.";
-                return;
-            }
-
-            resultText.textContent = "Checking...";
-            resultText.className = ''; // Reset color
-
-            try {
-                // The URL of our FastAPI backend endpoint
-                const apiUrl = `http://12_7.0.0.1:8000/check-location?lat=${lat}&lon=${lon}`;
-                
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-
-                if (data.is_mangrove) {
-                    resultText.textContent = "✅ This is a Mangrove region.";
-                    resultText.className = 'mangrove';
-                } else {
-                    resultText.textContent = "❌ This is a Non-mangrove region.";
-                    resultText.className = 'non-mangrove';
-                }
-
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                resultText.textContent = "Error: Could not connect to the server.";
-                resultText.className = 'non-mangrove';
-            }
-        });
-    </script>
-
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -214,3 +139,78 @@
 </body>
 
 </html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mangrove Region Checker</title>
+    <style>
+        body { font-family: sans-serif; display: grid; place-content: center; height: 100vh; margin: 0; background-color: #f0f4f8; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        input { padding: 0.5rem; margin: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 0.6rem 1.2rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        #result { margin-top: 1rem; font-size: 1.2rem; font-weight: bold; }
+        .mangrove { color: #28a745; }
+        .non-mangrove { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Mangrove Region Checker</h1>
+        <div>
+            <input type="number" id="latitude" placeholder="Enter Latitude" step="any">
+            <input type="number" id="longitude" placeholder="Enter Longitude" step="any">
+        </div>
+        <button id="checkButton">Check Location</button>
+        <p id="result">Enter coordinates to see the result.</p>
+    </div>
+
+    <script>
+        const checkButton = document.getElementById('checkButton');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const resultText = document.getElementById('result');
+
+        checkButton.addEventListener('click', async () => {
+            const lat = latitudeInput.value;
+            const lon = longitudeInput.value;
+
+            if (!lat || !lon) {
+                resultText.textContent = "Please enter both latitude and longitude.";
+                return;
+            }
+
+            resultText.textContent = "Checking...";
+            resultText.className = ''; // Reset color
+
+            try {
+                // The URL of our FastAPI backend endpoint
+                const apiUrl = `http://12_7.0.0.1:8000/check-location?lat=${lat}&lon=${lon}`;
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+
+                if (data.is_mangrove) {
+                    resultText.textContent = "✅ This is a Mangrove region.";
+                    resultText.className = 'mangrove';
+                } else {
+                    resultText.textContent = "❌ This is a Non-mangrove region.";
+                    resultText.className = 'non-mangrove';
+                }
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                resultText.textContent = "Error: Could not connect to the server.";
+                resultText.className = 'non-mangrove';
+            }
+        });
+    </script>
+
+</body>
+</html> -->
